@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WINTER ARC — Better Habits • Bigger Results</title>
+  
+  <!-- Google Fonts: Handwritten & Planner Aesthetic -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Kalam:wght@400;700&family=Permanent+Marker&family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
+  
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  
+  <!-- GSAP for Smooth Micro-Animations -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+  
+  <!-- Canvas Confetti for Celebrations -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
+  
+  <!-- Chart.js for Progress Charts -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- Paper Grain Background Overlay -->
+  <div class="paper-texture"></div>
+
+  <!-- Main Container -->
+  <div class="app-container">
+    
+    <!-- TOP NAVIGATION BAR -->
+    <header class="top-nav">
+      <div class="nav-brand">
+        <div class="logo-icon"><i data-lucide="zap"></i></div>
+        <span class="brand-text">WINTER ARC DIGITAL</span>
+      </div>
+      
+      <div class="nav-tabs">
+        <button class="nav-tab active" data-tab="sheet"><i data-lucide="layout-grid"></i> Tracker Sheet</button>
+        <button class="nav-tab" data-tab="progress"><i data-lucide="trending-up"></i> My Progress</button>
+        <button class="nav-tab" data-tab="calendar"><i data-lucide="calendar"></i> Calendar</button>
+        <button class="nav-tab" data-tab="goals"><i data-lucide="target"></i> Goals</button>
+      </div>
+      
+      <div class="nav-actions">
+        <button id="todayBtn" class="btn btn-outline btn-sm" title="Jump to Today"><i data-lucide="disc"></i> Today</button>
+        <button id="reportBtn" class="btn btn-secondary btn-sm" title="Monthly Report"><i data-lucide="file-text"></i> Report</button>
+        <button id="exportBtn" class="btn btn-icon btn-sm" title="Export Data JSON"><i data-lucide="download"></i></button>
+        <button id="importBtn" class="btn btn-icon btn-sm" title="Import Data JSON"><i data-lucide="upload"></i></button>
+        <input type="file" id="importFileInput" accept=".json" style="display: none;">
+        <button id="themeToggleBtn" class="btn btn-icon btn-sm" title="Toggle Dark/Light Mode"><i data-lucide="moon"></i></button>
+      </div>
+    </header>
+
+    <!-- VIEWS CONTAINER -->
+    <main class="views-wrapper">
+      
+      <!-- ========================================== -->
+      <!-- VIEW 1: PRINTABLE TRACKER SHEET (REFERENCE) -->
+      <!-- ========================================== -->
+      <section id="sheetView" class="tab-view active">
+        
+        <!-- PLANNER SHEET PAPER CARD -->
+        <div class="planner-sheet">
+          
+          <!-- 1. HEADER SECTION (INSPIRED EXACTLY BY REFERENCE IMAGE) -->
+          <div class="sheet-header">
+            <div class="title-container">
+              <!-- Left Mountain Peak -->
+              <div class="mountain-graphic left">
+                <svg viewBox="0 0 100 60" width="85" height="50" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M 5 55 L 45 10 L 85 55" />
+                  <path d="M 45 10 L 32 28 L 40 34 L 25 55" />
+                  <path d="M 60 55 L 80 28 L 95 55" />
+                  <path d="M 80 28 L 72 40 L 78 44" />
+                </svg>
+              </div>
+
+              <!-- Main Title Block -->
+              <div class="title-block">
+                <h1 class="main-title">WINTER ARC</h1>
+                <div class="subtitle-wrapper">
+                  <span class="sub-line"></span>
+                  <p class="subtitle">BETTER HABITS <span class="star">✦</span> BIGGER RESULTS</p>
+                  <span class="sub-line"></span>
+                </div>
+              </div>
+
+              <!-- Right Mountain Peak -->
+              <div class="mountain-graphic right">
+                <svg viewBox="0 0 100 60" width="85" height="50" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M 5 55 L 45 10 L 85 55" />
+                  <path d="M 45 10 L 32 28 L 40 34 L 25 55" />
+                  <path d="M 60 55 L 80 28 L 95 55" />
+                  <path d="M 80 28 L 72 40 L 78 44" />
+                </svg>
+              </div>
+            </div>
+
+            <!-- Name & Date Banner Input Box -->
+            <div class="user-meta-box">
+              <div class="meta-field">
+                <label for="userNameInput">Name:</label>
+                <input type="text" id="userNameInput" placeholder="Enter your name..." value="Achiever">
+              </div>
+              
+              <div class="meta-field month-picker-field">
+                <label for="monthSelect">Month:</label>
+                <div class="month-selector-group">
+                  <button id="prevMonthBtn" class="month-nav-btn" title="Previous Month"><i data-lucide="chevron-left"></i></button>
+                  <select id="monthSelect"></select>
+                  <button id="nextMonthBtn" class="month-nav-btn" title="Next Month"><i data-lucide="chevron-right"></i></button>
+                </div>
+              </div>
+
+              <div class="meta-actions">
+                <button id="resetMonthBtn" class="btn btn-ghost btn-xs text-danger" title="Reset Current Month"><i data-lucide="rotate-ccw"></i> Reset Month</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- COMPACT HABIT STATS SUMMARY CARDS -->
+          <div class="stats-summary-bar">
+            <div class="stat-card">
+              <span class="stat-label">Total Habits</span>
+              <span class="stat-value" id="statTotalHabits">12</span>
+            </div>
+            <div class="stat-card">
+              <span class="stat-label">Completed Today</span>
+              <span class="stat-value" id="statCompletedToday">0</span>
+            </div>
+            <div class="stat-card highlight">
+              <span class="stat-label">Today's %</span>
+              <span class="stat-value" id="statTodayPct">0%</span>
+            </div>
+            <div class="stat-card">
+              <span class="stat-label">Current Streak</span>
+              <span class="stat-value" id="statCurrentStreak">🔥 0 Days</span>
+            </div>
+            <div class="stat-card">
+              <span class="stat-label">Longest Streak</span>
+              <span class="stat-value" id="statLongestStreak">🏆 0 Days</span>
+            </div>
+            <div class="stat-card highlight">
+              <span class="stat-label">Monthly Completion</span>
+              <span class="stat-value" id="statMonthlyPct">0%</span>
+            </div>
+          </div>
+
+          <!-- 2. DAILY HABIT TRACKER SECTION -->
+          <div class="planner-section habit-tracker-section">
+            <div class="section-header">
+              <h2 class="highlighter-heading"><span class="highlight-mark">DAILY HABIT TRACKER</span></h2>
+              <div class="section-controls">
+                <button id="addHabitBtn" class="btn btn-sm btn-primary"><i data-lucide="plus"></i> Add Habit</button>
+              </div>
+            </div>
+
+            <!-- SPREADSHEET GRID WRAPPER -->
+            <div class="grid-table-container">
+              <table class="tracker-table" id="habitTable">
+                <thead>
+                  <tr id="habitTableHeaderRow">
+                    <th class="col-habit-name">Habit / Day</th>
+                    <!-- Day headers 1..31 dynamically injected -->
+                    <th class="col-summary">Completed</th>
+                    <th class="col-summary">Rate</th>
+                  </tr>
+                </thead>
+                <tbody id="habitTableBody">
+                  <!-- Habit rows dynamically generated -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- 3. SLEEP TRACKER SECTION -->
+          <div class="planner-section sleep-tracker-section">
+            <div class="section-header">
+              <h2 class="highlighter-heading"><span class="highlight-mark">SLEEP TRACKER</span></h2>
+              
+              <div class="sleep-header-controls">
+                <div class="view-toggle-group" id="sleepViewToggleGroup">
+                  <button id="sleepGridModeBtn" class="btn btn-xs btn-outline active" title="View Grid Table"><i data-lucide="table"></i> Grid</button>
+                  <button id="sleepGraphModeBtn" class="btn btn-xs btn-outline" title="View Sleep Graph"><i data-lucide="bar-chart-2"></i> Graph</button>
+                  <button id="sleepBothModeBtn" class="btn btn-xs btn-outline" title="View Both Grid & Graph"><i data-lucide="layout"></i> Both</button>
+                </div>
+
+                <div class="sleep-quick-input">
+                  <span class="quick-label">Quick Log:</span>
+                  <select id="quickSleepDay"></select>
+                  <input type="text" id="quickSleepInput" placeholder="e.g. 7.5 or 7h 30m">
+                  <button id="quickSleepSaveBtn" class="btn btn-sm btn-secondary">Log Sleep</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- SPREADSHEET GRID WRAPPER -->
+            <div class="grid-table-container" id="sleepGridTableContainer">
+              <table class="tracker-table sleep-table" id="sleepTable">
+                <thead>
+                  <tr id="sleepTableHeaderRow">
+                    <th class="col-habit-name">Hours Slept / Day</th>
+                    <!-- Day headers 1..31 dynamically injected -->
+                  </tr>
+                </thead>
+                <tbody id="sleepTableBody">
+                  <!-- Sleep rows (< 5 Hrs, 5-6, 6-7, 7-8, 8-9, >9) dynamically generated -->
+                </tbody>
+              </table>
+            </div>
+
+            <!-- SLEEP GRAPH VISUALIZATION CONTAINER (SHEET VIEW) -->
+            <div class="sleep-graph-container" id="sheetSleepGraphContainer" style="display: none;">
+              <div class="sleep-graph-header">
+                <div class="graph-title-info">
+                  <h4><i data-lucide="moon"></i> Daily Sleep Duration Graph</h4>
+                  <span class="text-muted">Target Range: 7.5 – 8.5 Hours/Night</span>
+                </div>
+                <div class="sleep-graph-legend">
+                  <span class="legend-chip legend-optimal"><span class="chip-dot"></span> Optimal (7.5–9h)</span>
+                  <span class="legend-chip legend-moderate"><span class="chip-dot"></span> Moderate (6–7.5h)</span>
+                  <span class="legend-chip legend-low"><span class="chip-dot"></span> Deficit (&lt;6h)</span>
+                  <span class="legend-chip legend-high"><span class="chip-dot"></span> High (&gt;9h)</span>
+                </div>
+              </div>
+              <div class="chart-container sheet-sleep-chart-height">
+                <canvas id="sheetSleepChart"></canvas>
+              </div>
+            </div>
+
+            <!-- SLEEP STATISTICS FOOTER -->
+            <div class="sleep-stats-bar" id="sleepStatsBar">
+              <div class="sleep-stat-item">Avg Sleep: <strong id="statAvgSleep">0.0h</strong></div>
+              <div class="sleep-stat-item">Best Sleep: <strong id="statBestSleep">Day -</strong></div>
+              <div class="sleep-stat-item">Lowest Sleep: <strong id="statLowestSleep">Day -</strong></div>
+              <div class="sleep-stat-item">7+ Hours Days: <strong id="statSevenPlusDays">0 Days</strong></div>
+              <div class="sleep-stat-item">Sleep Consistency: <strong id="statSleepConsistency">0%</strong></div>
+            </div>
+          </div>
+
+          <!-- 4. WEEKLY CHECK-IN SECTION -->
+          <div class="planner-section weekly-checkin-section">
+            <div class="section-header">
+              <h2 class="highlighter-heading"><span class="highlight-mark">WEEKLY CHECK-IN</span></h2>
+            </div>
+
+            <div class="weekly-cards-grid" id="weeklyCardsGrid">
+              <!-- 4 Weekly cards (Week 1..4) dynamically rendered -->
+            </div>
+          </div>
+
+          <!-- 5. MONTHLY REFLECTION SECTION -->
+          <div class="planner-section reflection-section">
+            <div class="section-header">
+              <h2 class="highlighter-heading"><span class="highlight-mark">MONTHLY REFLECTION</span></h2>
+              <div class="save-indicator" id="reflectionSaveStatus">Saved</div>
+            </div>
+
+            <div class="reflection-grid">
+              <div class="reflection-col">
+                <div class="reflection-box lined-box">
+                  <label for="winsInput">Biggest Wins This Month:</label>
+                  <textarea id="winsInput" class="lined-textarea" rows="6" placeholder="List your key victories and proud moments..."></textarea>
+                </div>
+                <div class="reflection-box lined-box">
+                  <label for="improveInput">What I Need To Improve:</label>
+                  <textarea id="improveInput" class="lined-textarea" rows="6" placeholder="Identify bottlenecks and habits to polish..."></textarea>
+                </div>
+              </div>
+
+              <div class="reflection-col">
+                <div class="reflection-box lined-box">
+                  <label for="goalsNextInput">Next Month's Goals:</label>
+                  <textarea id="goalsNextInput" class="lined-textarea" rows="6" placeholder="Set targets for the upcoming Winter Arc phase..."></textarea>
+                </div>
+                <div class="reflection-box lined-box">
+                  <label for="mindsetInput">Notes / Mindset:</label>
+                  <textarea id="mindsetInput" class="lined-textarea" rows="6" placeholder="Mantra, focus quotes, mindset shifts..."></textarea>
+                </div>
+              </div>
+            </div>
+
+            <div class="reflection-actions">
+              <button id="saveReflectionBtn" class="btn btn-primary"><i data-lucide="save"></i> Save Reflection</button>
+            </div>
+          </div>
+
+        </div> <!-- END .planner-sheet -->
+      </section>
+
+
+      <!-- ========================================== -->
+      <!-- VIEW 2: MY PROGRESS DASHBOARD -->
+      <!-- ========================================== -->
+      <section id="progressView" class="tab-view">
+        <div class="dashboard-header">
+          <h2>MY PROGRESS DASHBOARD</h2>
+          <p class="text-muted">Visual analytics of your Winter Arc performance</p>
+        </div>
+
+        <!-- STREAK & SUMMARY BANNER -->
+        <div class="progress-banner">
+          <div class="banner-card">
+            <div class="banner-icon">🔥</div>
+            <div class="banner-info">
+              <span class="banner-value" id="dashCurrentStreak">0 Days</span>
+              <span class="banner-title">Current Streak</span>
+            </div>
+          </div>
+
+          <div class="banner-card">
+            <div class="banner-icon">🏆</div>
+            <div class="banner-info">
+              <span class="banner-value" id="dashBestStreak">0 Days</span>
+              <span class="banner-title">Best Streak</span>
+            </div>
+          </div>
+
+          <div class="banner-card">
+            <div class="banner-icon">📈</div>
+            <div class="banner-info">
+              <span class="banner-value" id="dashMonthlyScore">0%</span>
+              <span class="banner-title">Monthly Score</span>
+            </div>
+          </div>
+
+          <div class="banner-card">
+            <div class="banner-icon">💪</div>
+            <div class="banner-info">
+              <span class="banner-value" id="dashWorkoutDays">0 Days</span>
+              <span class="banner-title">Workout Days</span>
+            </div>
+          </div>
+
+          <div class="banner-card">
+            <div class="banner-icon">💧</div>
+            <div class="banner-info">
+              <span class="banner-value" id="dashWaterDays">0 Days</span>
+              <span class="banner-title">Water Goal Days</span>
+            </div>
+          </div>
+
+          <div class="banner-card">
+            <div class="banner-icon">😴</div>
+            <div class="banner-info">
+              <span class="banner-value" id="dashAvgSleep">0.0h</span>
+              <span class="banner-title">Avg Sleep</span>
+            </div>
+          </div>
+
+          <div class="banner-card">
+            <div class="banner-icon">📚</div>
+            <div class="banner-info">
+              <span class="banner-value" id="dashLearningDays">0 Days</span>
+              <span class="banner-title">Learning Days</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- PROGRESS METRICS & CHARTS -->
+        <div class="progress-grid-layout">
+          <!-- Circular Overview Rings -->
+          <div class="progress-card">
+            <h3>Habit Consistency Breakdown</h3>
+            <div class="rings-container" id="habitRingsContainer">
+              <!-- Dynamic circular rings -->
+            </div>
+          </div>
+
+          <!-- Habit Completion Chart -->
+          <div class="progress-card">
+            <h3>Daily Completion Trend</h3>
+            <div class="chart-container">
+              <canvas id="dailyTrendChart"></canvas>
+            </div>
+          </div>
+
+          <!-- Category Progress Bars -->
+          <div class="progress-card full-width">
+            <h3>Habit Performance Rankings</h3>
+            <div class="habit-bars-list" id="habitBarsList">
+              <!-- Dynamic progress bars -->
+            </div>
+          </div>
+
+          <!-- SLEEP TRACKER GRAPH & ANALYTICS CARD -->
+          <div class="progress-card full-width sleep-dashboard-card">
+            <div class="card-header-with-actions">
+              <div>
+                <h3>😴 Sleep Tracker & Trends Graph</h3>
+                <p class="text-muted">Daily sleep duration vs 8.0h goal baseline & category distribution</p>
+              </div>
+              <div class="sleep-dash-pills">
+                <span class="metric-pill">Avg: <strong id="dashSleepAvgPill">0.0h</strong></span>
+                <span class="metric-pill">Surplus/Debt: <strong id="dashSleepDebtPill">0.0h</strong></span>
+                <span class="metric-pill">7+ Hours Days: <strong id="dashSleepTargetMetPill">0%</strong></span>
+              </div>
+            </div>
+
+            <div class="sleep-dash-grid">
+              <div class="progress-card inner-chart-card">
+                <h4>Daily Sleep Hours Trend</h4>
+                <div class="chart-container sleep-chart-container">
+                  <canvas id="progressSleepTrendChart"></canvas>
+                </div>
+              </div>
+              
+              <div class="progress-card inner-chart-card">
+                <h4>Sleep Category Breakdown</h4>
+                <div class="chart-container sleep-chart-container">
+                  <canvas id="progressSleepCategoryChart"></canvas>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+
+      <!-- ========================================== -->
+      <!-- VIEW 3: CALENDAR VIEW -->
+      <!-- ========================================== -->
+      <section id="calendarView" class="tab-view">
+        <div class="dashboard-header">
+          <h2>MONTHLY CALENDAR</h2>
+          <p class="text-muted">Click any date for detailed daily log</p>
+        </div>
+
+        <div class="calendar-wrapper">
+          <div class="calendar-days-header">
+            <div>Sun</div><div>Mon</div><div>Tue</div><div>Wed</div><div>Thu</div><div>Fri</div><div>Sat</div>
+          </div>
+          <div class="calendar-grid" id="calendarGrid">
+            <!-- Dynamic calendar cells -->
+          </div>
+        </div>
+      </section>
+
+
+      <!-- ========================================== -->
+      <!-- VIEW 4: GOALS MANAGEMENT -->
+      <!-- ========================================== -->
+      <section id="goalsView" class="tab-view">
+        <div class="dashboard-header">
+          <div class="header-with-btn">
+            <div>
+              <h2>WINTER ARC GOALS</h2>
+              <p class="text-muted">Track monthly, weekly, fitness, study & personal milestones</p>
+            </div>
+            <button id="addGoalBtn" class="btn btn-primary"><i data-lucide="plus-circle"></i> Add Goal</button>
+          </div>
+        </div>
+
+        <div class="goals-grid" id="goalsGrid">
+          <!-- Dynamic goal cards -->
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- MODAL 1: DAILY DETAIL VIEW -->
+  <!-- ========================================== -->
+  <div class="modal-backdrop" id="dailyModal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 id="modalDayTitle">DAY 15 — Log Details</h3>
+        <button class="modal-close" id="closeDailyModal"><i data-lucide="x"></i></button>
+      </div>
+
+      <div class="modal-body">
+        <!-- Habit Checkboxes List -->
+        <div class="modal-section">
+          <h4><i data-lucide="check-square"></i> Habits Completed Today</h4>
+          <div class="daily-habits-checklist" id="modalHabitsChecklist">
+            <!-- Dynamic habit items -->
+          </div>
+        </div>
+
+        <!-- Metrics Grid -->
+        <div class="modal-grid-2">
+          <div class="modal-section">
+            <label for="modalSleepSelect">Sleep Duration:</label>
+            <select id="modalSleepSelect" class="form-control">
+              <option value="">-- Select Sleep --</option>
+              <option value="< 5 Hrs">&lt; 5 Hrs</option>
+              <option value="5 - 6 Hrs">5 - 6 Hrs</option>
+              <option value="6 - 7 Hrs">6 - 7 Hrs</option>
+              <option value="7 - 8 Hrs">7 - 8 Hrs</option>
+              <option value="8 - 9 Hrs">8 - 9 Hrs</option>
+              <option value="> 9 Hrs">&gt; 9 Hrs</option>
+            </select>
+          </div>
+
+          <div class="modal-section">
+            <label for="modalWeightInput">Weight (kg):</label>
+            <input type="number" step="0.1" id="modalWeightInput" class="form-control" placeholder="e.g. 72.5">
+          </div>
+        </div>
+
+        <div class="modal-section">
+          <label>Mood (1-10):</label>
+          <div class="mood-picker" id="modalMoodPicker">
+            <!-- 1 to 10 buttons -->
+          </div>
+        </div>
+
+        <div class="modal-section">
+          <label for="modalNotesInput">Daily Notes & Reflection:</label>
+          <textarea id="modalNotesInput" class="form-control lined-textarea" rows="4" placeholder="How did today go? What went well?"></textarea>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button id="saveDailyModalBtn" class="btn btn-primary"><i data-lucide="check"></i> Save Day</button>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ========================================== -->
+  <!-- MODAL 2: ADD / EDIT HABIT MODAL -->
+  <!-- ========================================== -->
+  <div class="modal-backdrop" id="habitModal">
+    <div class="modal-card modal-sm">
+      <div class="modal-header">
+        <h3 id="habitModalTitle">Add Custom Habit</h3>
+        <button class="modal-close" id="closeHabitModal"><i data-lucide="x"></i></button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" id="habitEditId">
+        <div class="form-group">
+          <label for="habitNameInput">Habit Name:</label>
+          <input type="text" id="habitNameInput" class="form-control" placeholder="e.g. Cold Shower / Read 20 Pages">
+        </div>
+        <div class="form-group">
+          <label for="habitGoalInput">Monthly Goal (Days out of 31):</label>
+          <input type="number" id="habitGoalInput" class="form-control" min="1" max="31" value="31">
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button id="saveHabitBtn" class="btn btn-primary">Save Habit</button>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ========================================== -->
+  <!-- MODAL 3: ADD / EDIT GOAL MODAL -->
+  <!-- ========================================== -->
+  <div class="modal-backdrop" id="goalModal">
+    <div class="modal-card modal-sm">
+      <div class="modal-header">
+        <h3 id="goalModalTitle">Add Goal</h3>
+        <button class="modal-close" id="closeGoalModal"><i data-lucide="x"></i></button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" id="goalEditId">
+        <div class="form-group">
+          <label for="goalCategorySelect">Category:</label>
+          <select id="goalCategorySelect" class="form-control">
+            <option value="Monthly Goal">Monthly Goal</option>
+            <option value="Weekly Goal">Weekly Goal</option>
+            <option value="Habit Goal">Habit Goal</option>
+            <option value="Fitness Goal">Fitness Goal</option>
+            <option value="Study Goal">Study Goal</option>
+            <option value="Personal Goal">Personal Goal</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="goalNameInput">Goal Name:</label>
+          <input type="text" id="goalNameInput" class="form-control" placeholder="e.g. DSA Problems / Read 3 Books">
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="goalTargetInput">Target:</label>
+            <input type="number" id="goalTargetInput" class="form-control" value="100">
+          </div>
+          <div class="form-group">
+            <label for="goalCurrentInput">Current Progress:</label>
+            <input type="number" id="goalCurrentInput" class="form-control" value="0">
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="goalDeadlineInput">Deadline:</label>
+          <input type="date" id="goalDeadlineInput" class="form-control">
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button id="saveGoalBtn" class="btn btn-primary">Save Goal</button>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ========================================== -->
+  <!-- MODAL 4: MONTHLY REPORT / PRINTABLE REPORT -->
+  <!-- ========================================== -->
+  <div class="modal-backdrop" id="reportModal">
+    <div class="modal-card modal-lg">
+      <div class="modal-header">
+        <h3>WINTER ARC — Monthly Progress Report</h3>
+        <button class="modal-close" id="closeReportModal"><i data-lucide="x"></i></button>
+      </div>
+      <div class="modal-body printable-report-body" id="reportContent">
+        <!-- Generated report content -->
+      </div>
+      <div class="modal-footer">
+        <button id="printReportBtn" class="btn btn-primary"><i data-lucide="printer"></i> Print / Download PDF</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
